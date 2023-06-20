@@ -3,11 +3,17 @@
 #include "util.h"
 #include <pthread.h>
 
-void aumentaprioridade(pessoa p)
+void aumentaprioridade(tipo_pessoa p)
 {
     if (p.frustracoes == 2)
     {
         p.prioridade_temp++;
     }
+    
+}
+
+void cria_pessoa(pthread_t thread)
+{
+    
     
 }
