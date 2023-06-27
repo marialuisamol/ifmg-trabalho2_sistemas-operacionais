@@ -26,12 +26,4 @@ tipo_fila *fila;
 
 pthread_mutex_t mutex_forno = PTHREAD_MUTEX_INITIALIZER;//mutex
 
-//variaveis de condição
-pthread_cond_t cond_s01 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond_s02 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond_v01 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond_v02 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond_c01 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond_c02 = PTHREAD_COND_INITIALIZER;
-
 #endif
