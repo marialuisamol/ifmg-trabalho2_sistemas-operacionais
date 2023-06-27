@@ -15,7 +15,7 @@ void aumenta_prioridade(tipo_pessoa pessoa)
     
 }
 
-tipo_pessoa desenfileira(tipo_fila *fila)
+void desenfileira(tipo_fila *fila)
 {
     tipo_pessoa pessoa = fila[0].p;
 
@@ -26,8 +26,6 @@ tipo_pessoa desenfileira(tipo_fila *fila)
         i++;
     }
     fila->ultimo--;
-
-    return pessoa;
 }
 
 void enfileira(tipo_fila *fila, tipo_pessoa pessoa)

@@ -5,12 +5,11 @@
 
 typedef struct tipo_pessoa
 {
+    char* nome;
     int prioridade;
     int prioridade_temp;
-    char* nome;
     int frustracoes;
-    int uso_forno;
-    int id;                                       
+    int uso_forno;                                       
 
 }tipo_pessoa;
 
@@ -18,6 +17,7 @@ typedef struct tipo_fila
 {
     tipo_pessoa p;
     int ultimo;
+    tipo_pessoa *prox;
 }tipo_fila;
 
 pthread_mutex_t mutex_forno = PTHREAD_MUTEX_INITIALIZER;
