@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "util.h"
+#include "func.h"
 #include <assert.h>
 #include <pthread.h>
 

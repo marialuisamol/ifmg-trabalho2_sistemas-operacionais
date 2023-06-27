@@ -11,51 +11,63 @@ void aumentaprioridade(tipo_pessoa p)
     }
 }
 
-void desenfileira(tipo_fila *fila)
-{
-    tipo_pessoa pessoa = fila[0].p;
-
-    while (fila->ultimo != NULL)
-    {
-        int i = 0;
-        fila[i].p = fila[i+1].p;
-        i++;
-    }
-    fila->ultimo--;
+void cria_fila(tipo_fila *fila){
+    
+    fila->primeiro = malloc(sizeof(tipo_pessoa));
+    fila->ultimo = fila->primeiro;
+    fila->ultimo->proximo = NULL;
 }
 
-void enfileira(tipo_fila *fila, tipo_pessoa pessoa)
+void desenfileira()
 {
-    int i = fila->ultimo, menor_prioridade = fila->ultimo;
-    while (fila->ultimo <= 0)
-    {        
-        if (fila[i].p.prioridade_temp < pessoa.prioridade ||
-        fila[i].p.prioridade < pessoa.prioridade)
+    tipo_pessoa *ret = fila->primeiro;
+    
+    while (fila->primeiro->proximo != NULL)
+    {
+        if (fila->primeiro->proximo->prioridade > ret->prioridade)
         {
-            menor_prioridade = i;
+            ret = fila->primeiro->proximo;
+        }
+
+        for (size_t i = ret; i <= fila->ultimo; i++)
+        {
+               
         }
         
-        i--;
+        fila->qnt--;
     }
-
-    for (int j = fila->ultimo; i < j; j--)
-    {
-        fila[j].p = fila[j-1].p;
-    }
-
-    fila[i].p = pessoa;
-    fila->ultimo++;
-
-    printf("%s entrou na fila\n", pessoa.nome);
-       
+    
 }
 
-void usa_forno(void){
+void enfileira(tipo_pessoa pessoa)
+{
+    tipo_pessoa *aux;
+    aux = malloc(sizeof(tipo_pessoa));
+    fila->ultimo->proximo = aux;
+    *aux = pessoa;
+    aux->proximo = NULL;
+    fila->ultimo = aux;       
+}
+
+void usa_forno(tipo_pessoa pessoa){
+
+    srand(time(NULL));
+    sleep(rand()%3 + 3);
+    printf("%s entra na fila", pessoa.nome);
+    enfileira(pessoa);
 
     pthread_mutex_lock(&mutex_forno);
         //seção crítica
+        //verificar se ha alguem com maior prioridade
+            //se sim
+                //dar signal
+                //aumentar a prioridade temporaria de quem esta na frente desse
+            //se não 
+                //usar
+                //dar signal no proximo 
         printf("%s usa o forno\n", pessoa.nome);
         pessoa.uso_forno--;
+        desenfileira(pessoa);
         sleep(1);
     pthread_mutex_unlock(&mutex_forno);
 }

@@ -4,8 +4,9 @@
 #include <pthread.h>
 
 void aumentaprioridade(tipo_pessoa pessoa);
+void cria_fila();
 void enfileira(tipo_pessoa pessoa);
-tipo_pessoa desenfileira(tipo_fila *fila);
-void usa_forno(void);
+tipo_pessoa desenfileira();
+void usa_forno(tipo_pessoa pessoa);
 
 #endif
