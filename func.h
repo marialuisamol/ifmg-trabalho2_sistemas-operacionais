@@ -6,6 +6,6 @@
 void aumentaprioridade(tipo_pessoa pessoa);
 void enfileira(tipo_pessoa pessoa);
 tipo_pessoa desenfileira(tipo_fila *fila);
-void comportamento();
+void usa_forno(void);
 
 #endif

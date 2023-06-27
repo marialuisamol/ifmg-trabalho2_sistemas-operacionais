@@ -1,18 +1,14 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include "util.h"
 #include <pthread.h>
-#include <time.h>
-#include <assert.h>
 
-void aumenta_prioridade(tipo_pessoa pessoa)
+void aumentaprioridade(tipo_pessoa p)
 {
-    if (pessoa.frustracoes == 2)
+    if (p.frustracoes == 2)
     {
-        pessoa.prioridade_temp++;
+        p.prioridade_temp++;
     }
-    
 }
 
 void desenfileira(tipo_fila *fila)
@@ -54,7 +50,7 @@ void enfileira(tipo_fila *fila, tipo_pessoa pessoa)
        
 }
 
-void usa_forno(tipo_pessoa pessoa){
+void usa_forno(void){
 
     pthread_mutex_lock(&mutex_forno);
         //seção crítica

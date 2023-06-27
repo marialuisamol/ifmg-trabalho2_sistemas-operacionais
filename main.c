@@ -1,11 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "util.h"
-#include "func.h"
 #include <assert.h>
-#include <string.h>
 #include <pthread.h>
-
 
 #define NUM_TRHEADS 7
 
@@ -16,6 +13,7 @@ int main(int argc, char const *argv[])
     
     // setando vetor nome x prioridade
     // calouro = 1; veterano = 2; senior = 3
+
     pessoas[0].nome = "carlos";
     pessoas[0].prioridade = 3;
     pessoas[0].prioridade_temp = pessoas[0].prioridade;
@@ -41,26 +39,16 @@ int main(int argc, char const *argv[])
     pessoas[5].prioridade = 1;
     pessoas[5].prioridade_temp = pessoas[5].prioridade;
 
-    for(int i = 0; i < NUM_TRHEADS; i++)
-    {
-        pthread_create(&threads[i], NULL, cria_pessoa(threads[i]), NULL);
-    }
-
-    pessoas[6].nome = "frederico";
-    pessoas[6].prioridade = 0;
-
     for (int i = 0; i < NUM_TRHEADS-1; i++)
     {
         printf("Entre com a quantidade de vezes que %s vai utilizar o forno: ", pessoas[i].nome);
         scanf("%d", &pessoas[i].uso_forno);
     }
     
-
-    
     for (int i = 0; i < NUM_TRHEADS-1; i++)
     {
         //cria threads
-        pthread_create(&threads[i], NULL, (void*)comportamento, (void*) &pessoas[i]);
+        pthread_create(&threads[i], NULL, (void*)usa_forno, (void*) &pessoas[i]);
     }
 
     //espera as threads terminarem para sguir a main
