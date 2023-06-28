@@ -47,7 +47,7 @@ int main(int argc, char const *argv[])
 
     cria_fila(); //inicializa a fila
     
-    for (int i = 0; i < NUM_TRHEADS-1; i++)
+    for (int i = 0; i < NUM_TRHEADS; i++)
     {
         //cria threads
         pthread_create(&threads[i], NULL, (void*)task, (void*) &pessoas[i]);
