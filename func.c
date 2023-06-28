@@ -7,6 +7,39 @@ int vazia_fila(){
     return fila->primeiro == fila->ultimo;
 }
 
+void cria_fila(tipo_fila *fila){
+    
+    fila->primeiro = malloc(sizeof(tipo_pessoa));
+    fila->ultimo = fila->primeiro;
+    fila->ultimo->proximo = NULL;
+}
+
+void enfileira(tipo_pessoa *pessoa)
+{
+    
+    if (vazia_fila(fila)){
+        fila->primeiro = pessoa;
+        pessoa->proximo = NULL;
+        fila->ultimo = pessoa->proximo;
+        fila->qnt++;
+    }
+    else{
+
+        tipo_pessoa *aux = fila->primeiro;
+
+        while (aux != NULL)
+        {
+            if(aux->proximo == NULL){
+                aux->proximo = pessoa;
+                fila->qnt++;
+                fila->ultimo = pessoa;
+            }
+            aux = aux->proximo;
+            break;
+        }   
+    }     
+}
+
 void aumenta_prioridade(tipo_pessoa *pessoa)
 {
     if (pessoa->frustracoes == 2)
@@ -15,12 +48,6 @@ void aumenta_prioridade(tipo_pessoa *pessoa)
     }
 }
 
-void cria_fila(tipo_fila *fila){
-    
-    fila->primeiro = malloc(sizeof(tipo_pessoa));
-    fila->ultimo = fila->primeiro;
-    fila->ultimo->proximo = NULL;
-}
 
 tipo_pessoa desenfileira()
 {
@@ -84,32 +111,6 @@ tipo_pessoa desenfileira()
     
     fila->qnt--;
     return *ret;
-}
-
-void enfileira(tipo_pessoa *pessoa)
-{
-    
-    if (vazia_fila(fila)){
-        fila->primeiro = pessoa;
-        pessoa->proximo = NULL;
-        fila->ultimo = pessoa->proximo;
-        fila->qnt++;
-    }
-    else{
-
-        tipo_pessoa *aux = fila->primeiro;
-
-        while (aux != NULL)
-        {
-            if(aux->proximo == NULL){
-                aux->proximo = pessoa;
-                fila->qnt++;
-                fila->ultimo = pessoa;
-            }
-            aux = aux->proximo;
-            break;
-        }   
-    }     
 }
 
 void task(void* args){
