@@ -3,15 +3,15 @@
 #include "util.h"
 #include <pthread.h>
 
-int vazia_fila(tipo_fila *fila){
+int vazia_fila(){
     return fila->primeiro == fila->ultimo;
 }
 
-void aumenta_prioridade(tipo_pessoa *p)
+void aumenta_prioridade(tipo_pessoa *pessoa)
 {
-    if (p->frustracoes == 2)
+    if (pessoa->frustracoes == 2)
     {
-        p->prioridade_temp++;
+        pessoa->prioridade_temp++;
     }
 }
 
@@ -22,7 +22,7 @@ void cria_fila(tipo_fila *fila){
     fila->ultimo->proximo = NULL;
 }
 
-void desenfileira()
+tipo_pessoa desenfileira()
 {
     tipo_pessoa *ret = fila->primeiro, *aux;
     
@@ -83,6 +83,7 @@ void desenfileira()
     }
     
     fila->qnt--;
+    return *ret;
 }
 
 void enfileira(tipo_pessoa *pessoa)
