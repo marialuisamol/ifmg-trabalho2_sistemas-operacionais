@@ -7,8 +7,8 @@ int vazia_fila(){
     return fila->primeiro == fila->ultimo;
 }
 
-void cria_fila(tipo_fila *fila){
-    
+void cria_fila(tipo_fila *fila)
+{    
     fila->primeiro = malloc(sizeof(tipo_pessoa));
     fila->ultimo = fila->primeiro;
     fila->ultimo->proximo = NULL;
@@ -16,16 +16,18 @@ void cria_fila(tipo_fila *fila){
 
 void enfileira(tipo_pessoa *pessoa)
 {
-    
-    if (vazia_fila(fila)){
+    if (vazia_fila(fila))
+    {
         fila->primeiro = pessoa;
         pessoa->proximo = NULL;
         fila->ultimo = pessoa->proximo;
         fila->qnt++;
     }
-    else{
-
+    else
+    {
         tipo_pessoa *aux = fila->primeiro;
+
+        pthread_cond_wait(&pessoa->cond, &mutex_forno);
 
         while (aux != NULL)
         {
@@ -39,15 +41,6 @@ void enfileira(tipo_pessoa *pessoa)
         }   
     }     
 }
-
-void aumenta_prioridade(tipo_pessoa *pessoa)
-{
-    if (pessoa->frustracoes == 2)
-    {
-        pessoa->prioridade_temp++;
-    }
-}
-
 
 tipo_pessoa desenfileira()
 {
@@ -82,6 +75,19 @@ tipo_pessoa desenfileira()
             }
             
         }
+        else
+        {
+            if (ret->prioridade < fila->primeiro->proximo->prioridade ||
+            ret->prioridade < fila->primeiro->proximo->prioridade_temp)
+            {
+                ret = fila->primeiro->proximo;
+                ret->frustracoes = 0;
+                ret->prioridade_temp = ret->prioridade;
+                aux = ret;
+                break;
+            }
+            
+        }
 
         //aumenta frustração de quem a fila foi furada
         fila->primeiro->frustracoes++;
@@ -92,8 +98,6 @@ tipo_pessoa desenfileira()
         ret = ret->proximo;
 
     }//while
-
-    
     
     if (aux == fila->primeiro)
     {
@@ -113,8 +117,16 @@ tipo_pessoa desenfileira()
     return *ret;
 }
 
-void task(void* args){
+void aumenta_prioridade(tipo_pessoa *pessoa)
+{
+    if (pessoa->frustracoes == 2)
+    {
+        pessoa->prioridade_temp++;
+    }
+}
 
+void task(void* args)
+{
     tipo_pessoa *pessoa = (tipo_pessoa*)args, *prox = fila->primeiro;
 
     srand(time(NULL));
@@ -125,10 +137,16 @@ void task(void* args){
 
     pthread_mutex_lock(&mutex_forno);
         //seção crítica
-     
-        printf("%s usa o forno\n", pessoa->nome);
 
-        sleep(1);
+        tipo_pessoa maior_p = desenfileira();
+        pthread_cond_signal(&maior_p.cond);
+
+        if (strcmp(maior_p.nome, pessoa->nome) == 0)
+        {
+            printf("%s usa o forno\n", pessoa->nome);
+
+            sleep(1);
+        }
 
     pthread_mutex_unlock(&mutex_forno);
 }

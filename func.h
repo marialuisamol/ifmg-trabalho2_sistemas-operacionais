@@ -1,5 +1,6 @@
 #ifndef FUNC.H
 #define FUNC.H
+
 #include "util.h"
 #include <pthread.h>
 

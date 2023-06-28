@@ -13,6 +13,7 @@ typedef struct tipo_pessoa
     int frustracoes;
     int uso_forno;                                    
     struct tipo_pessoa *proximo;
+    pthread_cond_t cond;//variaveis de condição
 
 }tipo_pessoa;
 
@@ -24,13 +25,10 @@ typedef struct tipo_fila
     
 }tipo_fila;
 
-//define variável fila
 tipo_fila *fila;
 
 //mutex
 pthread_mutex_t mutex_forno = PTHREAD_MUTEX_INITIALIZER;
 
-//variaveis de condição
-pthread_cond_t cond[6];
 
 #endif
