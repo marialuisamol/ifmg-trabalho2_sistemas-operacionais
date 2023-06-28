@@ -3,11 +3,15 @@
 #include "util.h"
 #include <pthread.h>
 
-void aumentaprioridade(tipo_pessoa p)
+int vazia_fila(tipo_fila *fila){
+    return fila->primeiro == fila->ultimo;
+}
+
+void aumenta_prioridade(tipo_pessoa *p)
 {
-    if (p.frustracoes == 2)
+    if (p->frustracoes == 2)
     {
-        p.prioridade_temp++;
+        p->prioridade_temp++;
     }
 }
 
@@ -20,54 +24,121 @@ void cria_fila(tipo_fila *fila){
 
 void desenfileira()
 {
-    tipo_pessoa *ret = fila->primeiro;
+    tipo_pessoa *ret = fila->primeiro, *aux;
     
-    while (fila->primeiro->proximo != NULL)
+    //encontra o proximo da fila seguindo a prioridade e ordem de chegada
+    while (ret != NULL)
     {
-        if (fila->primeiro->proximo->prioridade > ret->prioridade)
+        if (ret->prioridade_temp > ret->prioridade)
         {
-            ret = fila->primeiro->proximo;
+            if (ret->prioridade_temp < fila->primeiro->proximo->prioridade ||
+            ret->prioridade_temp < fila->primeiro->proximo->prioridade_temp)
+            {
+                ret = fila->primeiro->proximo;
+                ret->frustracoes = 0;
+                ret->prioridade_temp = ret->prioridade;
+                aux = ret;
+                break;
+            }
+            
+        }
+        else
+        {
+            if (ret->prioridade < fila->primeiro->proximo->prioridade ||
+            ret->prioridade < fila->primeiro->proximo->prioridade_temp)
+            {
+                ret = fila->primeiro->proximo;
+                ret->frustracoes = 0;
+                ret->prioridade_temp = ret->prioridade;
+                aux = ret;
+                break;
+            }
+            
         }
 
-        for (size_t i = ret; i <= fila->ultimo; i++)
-        {
-               
-        }
-        
-        fila->qnt--;
+        //aumenta frustração de quem a fila foi furada
+        fila->primeiro->frustracoes++;
+
+        aumenta_prioridade(fila->primeiro);
+
+        //anda com a fila
+        ret = ret->proximo;
+
+    }//while
+
+    
+    
+    if (aux == fila->primeiro)
+    {
+        fila->primeiro = fila->primeiro->proximo;
     }
     
+    //arredando pra frente celulas que estão depois da celula desenfileirada
+    else
+    {
+        while (aux != NULL)
+        {
+            aux = aux->proximo;
+        }
+    }
+    
+    fila->qnt--;
 }
 
-void enfileira(tipo_pessoa pessoa)
+void enfileira(tipo_pessoa *pessoa)
 {
-    tipo_pessoa *aux;
-    aux = malloc(sizeof(tipo_pessoa));
-    fila->ultimo->proximo = aux;
-    *aux = pessoa;
-    aux->proximo = NULL;
-    fila->ultimo = aux;       
+    
+    if (vazia_fila(fila)){
+        fila->primeiro = pessoa;
+        pessoa->proximo = NULL;
+        fila->ultimo = pessoa->proximo;
+        fila->qnt++;
+    }
+    else{
+
+        tipo_pessoa *aux = fila->primeiro;
+
+        while (aux != NULL)
+        {
+            if(aux->proximo == NULL){
+                aux->proximo = pessoa;
+                fila->qnt++;
+                fila->ultimo = pessoa;
+            }
+            aux = aux->proximo;
+            break;
+        }   
+    }     
 }
 
-void usa_forno(tipo_pessoa pessoa){
+void task(void* args){
+
+    tipo_pessoa *pessoa = (tipo_pessoa*)args, *prox = fila->primeiro;
 
     srand(time(NULL));
     sleep(rand()%3 + 3);
-    printf("%s entra na fila", pessoa.nome);
+
+    printf("%s entra na fila", pessoa->nome);
     enfileira(pessoa);
 
     pthread_mutex_lock(&mutex_forno);
         //seção crítica
-        //verificar se ha alguem com maior prioridade
-            //se sim
-                //dar signal
-                //aumentar a prioridade temporaria de quem esta na frente desse
-            //se não 
-                //usar
-                //dar signal no proximo 
-        printf("%s usa o forno\n", pessoa.nome);
-        pessoa.uso_forno--;
-        desenfileira(pessoa);
+     
+        printf("%s usa o forno\n", pessoa->nome);
+
         sleep(1);
+
     pthread_mutex_unlock(&mutex_forno);
 }
+
+/*
+* lock mutex
+* entra na seção critica
+* verifica se essa thread é a maix proxima do inicio da fila e de maior prioridade
+* se sim 
+* * usa a seção critica
+* * da signal pra proxima
+*
+* se não
+* * da wait em quem é
+*/

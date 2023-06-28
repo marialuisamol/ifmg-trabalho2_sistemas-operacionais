@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <pthread.h>
 
-#define NUM_TRHEADS 7
+#define NUM_TRHEADS 6
 
 int main(int argc, char const *argv[])
 {
@@ -39,6 +39,8 @@ int main(int argc, char const *argv[])
     pessoas[5].nome = "camila";
     pessoas[5].prioridade = 1;
     pessoas[5].prioridade_temp = pessoas[5].prioridade;
+
+    cria_fila(); //inicializa a fila
 
     for (int i = 0; i < NUM_TRHEADS-1; i++)
     {
