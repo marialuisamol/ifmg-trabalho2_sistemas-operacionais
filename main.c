@@ -5,6 +5,7 @@
 
 int main(int argc, char const *argv[])
 {
+    printf("Começou\n");
     tipo_pessoa pessoas[NUM_TRHEADS]; //vetor de pessoas presentes na dinamica da republica
     pthread_t threads[NUM_TRHEADS]; //identificador de trheads
     
@@ -50,12 +51,15 @@ int main(int argc, char const *argv[])
     // pessoas[5].uso_forno = USO_FORNO;
     // pthread_cond_init(&pessoas[5].cond, NULL); 
 
+    printf("Setou valores\n");
+
     cria_fila(); //inicializa a fila
     
     for (int i = 0; i < NUM_TRHEADS; i++)
     {
         //cria threads
-        pthread_create(&threads[i], NULL, (void*)task, (void*) &pessoas[i]);
+        printf("Cria trheads\n");
+        pthread_create(&threads[i], NULL, (void*)tarefa, (void*) &pessoas[i]);
     }
 
     //espera as threads terminarem para sguir a main

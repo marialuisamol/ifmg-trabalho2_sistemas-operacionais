@@ -34,6 +34,6 @@ void enfileira(tipo_pessoa *pessoa);
 tipo_pessoa desenfileira();
 
 void aumenta_prioridade(tipo_pessoa *pessoa);
-void task(void* args);
+void tarefa(void* args);
 
 #endif
