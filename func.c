@@ -1,5 +1,10 @@
 #include "func.h"
 
+tipo_fila *fila;
+
+//mutex
+pthread_mutex_t mutex_forno = PTHREAD_MUTEX_INITIALIZER;
+
 int vazia_fila(tipo_fila *fila)
 {
     return fila->primeiro == fila->ultimo;
