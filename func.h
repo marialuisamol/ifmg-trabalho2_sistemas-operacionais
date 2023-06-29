@@ -1,8 +1,10 @@
-#ifndef FUNC.H
-#define FUNC.H
+#ifndef FUNC_H
+#define FUNC_H
 
 #include "util.h"
-#include <pthread.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 int vazia_fila();
 void cria_fila();

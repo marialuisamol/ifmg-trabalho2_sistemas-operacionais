@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "util.h": "c",
-        "pthread.h": "c"
+        "pthread.h": "c",
+        "func.h": "c",
+        "stdlib.h": "c",
+        "stdio.h": "c"
     }
 }

@@ -1,9 +1,6 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include "util.h"
-#include <pthread.h>
+#include "func.h"
 
-int vazia_fila()
+int vazia_fila(tipo_fila *fila)
 {
     return fila->primeiro == fila->ultimo;
 }
@@ -52,10 +49,10 @@ tipo_pessoa desenfileira()
     {
         if (ret->prioridade_temp > ret->prioridade)
         {
-            if (ret->prioridade_temp < fila->primeiro->proximo->prioridade ||
-            ret->prioridade_temp < fila->primeiro->proximo->prioridade_temp)
+            if (ret->prioridade_temp < fila->primeiro->prioridade ||
+            ret->prioridade_temp < fila->primeiro->prioridade_temp)
             {
-                ret = fila->primeiro->proximo;
+                ret = fila->primeiro;
                 ret->frustracoes = 0;
                 ret->prioridade_temp = ret->prioridade;
                 aux = ret;
@@ -65,10 +62,10 @@ tipo_pessoa desenfileira()
         }
         else
         {
-            if (ret->prioridade < fila->primeiro->proximo->prioridade ||
-            ret->prioridade < fila->primeiro->proximo->prioridade_temp)
+            if (ret->prioridade < fila->primeiro->prioridade ||
+            ret->prioridade < fila->primeiro->prioridade_temp)
             {
-                ret = fila->primeiro->proximo;
+                ret = fila->primeiro;
                 ret->frustracoes = 0;
                 ret->prioridade_temp = ret->prioridade;
                 aux = ret;
@@ -78,17 +75,15 @@ tipo_pessoa desenfileira()
         }
 
         //aumenta frustração de quem a fila foi furada
-        fila->primeiro->frustracoes++;
+        ret->frustracoes++;
 
-        aumenta_prioridade(fila->primeiro);
+        aumenta_prioridade(ret);
 
         //anda com a fila
         ret = ret->proximo;
 
     }//while
 
-    
-    
     if (aux == fila->primeiro)
     {
         fila->primeiro = fila->primeiro->proximo;
