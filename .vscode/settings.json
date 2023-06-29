@@ -5,7 +5,8 @@
         "func.h": "c",
         "stdlib.h": "c",
         "stdio.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "fila.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

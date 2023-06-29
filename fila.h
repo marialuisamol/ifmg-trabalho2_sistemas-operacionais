@@ -1,5 +1,5 @@
-#ifndef FUNC_H
-#define FUNC_H
+#ifndef FILA_H
+#define FILA_H
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -28,12 +28,12 @@ typedef struct
     
 } tipo_fila;
 
-int vazia_fila();
 void cria_fila();
+int vazia_fila();
 void enfileira(tipo_pessoa *pessoa);
 tipo_pessoa desenfileira();
 
-void aumenta_prioridade(tipo_pessoa *pessoa);
-void tarefa(void* args);
+//mutex
+pthread_mutex_t mutex_forno = PTHREAD_MUTEX_INITIALIZER;
 
 #endif
