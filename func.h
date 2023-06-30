@@ -1,5 +1,5 @@
-#ifndef FILA_H
-#define FILA_H
+#ifndef FUNC_H
+#define FUNC_H
 
 #include <stdlib.h>
 #include <stdio.h>

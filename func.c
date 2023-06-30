@@ -1,4 +1,4 @@
-#include "fila.h"
+#include "func.h"
 
 tipo_fila *fila;
 pthread_mutex_t mutex_forno = PTHREAD_MUTEX_INITIALIZER;
@@ -13,7 +13,7 @@ void cria_fila()
     fila = malloc(sizeof(tipo_fila));
     fila->primeiro = NULL;
     fila->ultimo = fila->primeiro;
-    fila->ultimo->proximo = NULL;
+    fila->qnt = 0;
 }
 
 void enfileira(tipo_pessoa *pessoa)
