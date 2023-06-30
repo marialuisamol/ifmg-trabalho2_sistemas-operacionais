@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "util.h": "c",
+<<<<<<< HEAD
         "pthread.h": "c",
         "func.h": "c",
         "stdlib.h": "c",
@@ -8,4 +9,8 @@
         "string.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
+=======
+        "pthread.h": "c"
+    }
+>>>>>>> parent of f76fee8 (auxilio prof2)
 }

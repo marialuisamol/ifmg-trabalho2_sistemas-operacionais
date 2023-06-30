@@ -1,4 +1,6 @@
-#include "func.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <pthread.h>
 
 tipo_fila *fila;
 
@@ -12,8 +14,8 @@ int vazia_fila()
 
 void cria_fila()
 {   
+    fila = malloc(sizeof(tipo_fila));
     fila->primeiro = NULL;
-    printf("Inicializou a fila\n");
     fila->ultimo = fila->primeiro;
     fila->qnt = 0;
 }
@@ -66,11 +68,11 @@ void aumenta_prioridade(tipo_pessoa *pessoa)
 
 void tarefa(void* args){
 
-    tipo_pessoa *pessoa = (tipo_pessoa*)args, *prox = fila->primeiro;
+    tipo_pessoa *pessoa = (tipo_pessoa*)args;
     printf("Thread %s\n", pessoa->nome);
 
     srand(time(NULL));
-    sleep(rand()%3 + 3);
+    sleep(rand()%6 + 3);
 
     printf("%s entra na fila", pessoa->nome);
     enfileira(pessoa);
@@ -83,9 +85,10 @@ void tarefa(void* args){
 
         if (strcmp(maior_p.nome, pessoa->nome) == 0)
         {
-            printf("%s usa o forno\n", pessoa->nome);
+            printf("%s usa o forno\n", maior_p->nome);
 
             sleep(1);
+            printf("%s liberou o forno\n", maior_p->nome);
         }
 
     pthread_mutex_unlock(&mutex_forno);
