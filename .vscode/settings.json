@@ -5,8 +5,13 @@
         "func.h": "c",
         "stdlib.h": "c",
         "stdio.h": "c",
+<<<<<<< HEAD
         "string.h": "c",
         "fila.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
+=======
+        "string.h": "c"
+    }
+>>>>>>> parent of 70ce31b (testes)
 }

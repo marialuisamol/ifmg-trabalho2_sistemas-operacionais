@@ -33,7 +33,7 @@ int vazia_fila();
 void enfileira(tipo_pessoa *pessoa);
 tipo_pessoa desenfileira();
 
-//mutex
-pthread_mutex_t mutex_forno = PTHREAD_MUTEX_INITIALIZER;
+void aumenta_prioridade(tipo_pessoa *pessoa);
+void tarefa(void* args);
 
 #endif
