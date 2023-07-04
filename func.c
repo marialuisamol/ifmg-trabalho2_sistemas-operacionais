@@ -1,10 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include "func.h"
 
 tipo_fila *fila;
-
-//mutex
 pthread_mutex_t mutex_forno = PTHREAD_MUTEX_INITIALIZER;
 
 int vazia_fila()
@@ -31,17 +30,17 @@ void enfileira(tipo_pessoa *pessoa)
     }
     else
     {
-        tipo_pessoa *aux = fila->primeiro;
-
         pthread_cond_wait(&pessoa->cond, &mutex_forno);
+
+        tipo_pessoa *aux = fila->primeiro;
 
         while (aux != NULL)
         {
             if(aux->proximo == NULL)
             {
                 aux->proximo = pessoa;
-                fila->qnt++;
                 fila->ultimo = pessoa;
+                fila->qnt++;
             }
             aux = aux->proximo;
             break;
@@ -69,13 +68,14 @@ void aumenta_prioridade(tipo_pessoa *pessoa)
 void tarefa(void* args){
 
     tipo_pessoa *pessoa = (tipo_pessoa*)args;
-    printf("Thread %s\n", pessoa->nome);
 
-    srand(time(NULL));
-    sleep(rand()%6 + 3);
+    while (pessoa->uso_forno != 0)
+    {
+        srand(time(NULL));
+    sleep(rand()%6 + 10);
 
-    printf("%s entra na fila", pessoa->nome);
     enfileira(pessoa);
+    printf("%s entra na fila\n", pessoa->nome);
 
     pthread_mutex_lock(&mutex_forno);
         //seção crítica
@@ -85,11 +85,23 @@ void tarefa(void* args){
 
         if (strcmp(maior_p.nome, pessoa->nome) == 0)
         {
-            printf("%s usa o forno\n", maior_p->nome);
-
+            printf("%s está usando o forno\n", maior_p.nome);
+            maior_p.frustracoes = 0;
+            maior_p.prioridade_temp = maior_p.prioridade;
+            maior_p.uso_forno--;
             sleep(1);
-            printf("%s liberou o forno\n", maior_p->nome);
+            printf("%s liberou o forno\n", maior_p.nome);
         }
 
     pthread_mutex_unlock(&mutex_forno);
+    }
+    
 }
+
+// void tarefa_faxineiro(void* args)
+// {
+//     tipo_pessoa *faxineiro = (tipo_pessoa*)args;
+    
+//     sleep(5);  
+    
+// }
