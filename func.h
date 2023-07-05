@@ -31,7 +31,8 @@ int vazia_fila();
 void cria_fila();
 void enfileira(tipo_pessoa *pessoa);
 tipo_pessoa desenfileira();
-void ordena();
+tipo_pessoa* consulta_maior();
+void envelhece(tipo_pessoa *ultimo);
 
 void aumenta_prioridade(tipo_pessoa *pessoa);
 void tarefa(void* args);
