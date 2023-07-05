@@ -5,6 +5,7 @@
 
 tipo_fila *fila;
 pthread_mutex_t mutex_forno = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex_fila = PTHREAD_MUTEX_INITIALIZER;
 
 int vazia_fila()
 {
@@ -41,6 +42,7 @@ void enfileira(tipo_pessoa *pessoa)
                 aux->proximo = pessoa;
                 fila->ultimo = pessoa;
                 fila->qnt++;
+                aux->proximo->proximo = NULL;
             }
             aux = aux->proximo;
             break;
@@ -77,11 +79,8 @@ tipo_pessoa desenfileira()
         }
         
     }
-    
     fila->qnt--;
-
-    return *ret;
-    
+    return *ret;  
 }
 
 tipo_pessoa* consulta_maior()
@@ -94,7 +93,6 @@ tipo_pessoa* consulta_maior()
         {
             maior = aux;
         }
-
         aux = aux->proximo;
     }
     return maior;
@@ -104,7 +102,7 @@ tipo_pessoa* consulta_maior()
 void envelhece(tipo_pessoa *ultimo)
 {
     tipo_pessoa *aux = fila->primeiro;
-    while (aux->proximo != ultimo)
+    while (aux != ultimo)
     {
         aux->frustracoes++;
         if (aux->frustracoes == 2)
@@ -117,38 +115,41 @@ void envelhece(tipo_pessoa *ultimo)
 }
 
 void tarefa(void* args){
-
+    srand(time(NULL));
     tipo_pessoa *pessoa = (tipo_pessoa*)args;
-
+    int entrou = 0;
     while (pessoa->uso_forno != 0)
     {
-        srand(time(NULL));
-    sleep(rand()%6 + 10);
-
-
-    pthread_mutex_lock(&mutex_forno);
-        //seção crítica
-        enfileira(pessoa);
-        printf("%s entra na fila\n", pessoa->nome);
-
-        tipo_pessoa *maior_p = consulta_maior();//consulta
-        pthread_cond_signal(&maior_p->cond);
-
-        if (strcmp(maior_p->nome, pessoa->nome) == 0)
+        sleep(rand()%6 + 2);
+        if (pessoa->uso_forno != 0 && entrou == 0)
         {
-            printf("%s está usando o forno\n", maior_p->nome);
-            maior_p->frustracoes = 0;
-            maior_p->prioridade_temp = maior_p->prioridade;
-            maior_p->uso_forno--;
-            sleep(1);
-            printf("%s liberou o forno\n", maior_p->nome);
-            //DESENFILEIRA E SIGNAL
-            tipo_pessoa ret = desenfileira();
-            pthread_cond_signal(&ret.cond);
-            
+            pthread_mutex_lock(&mutex_fila);
+            enfileira(pessoa);
+            pthread_mutex_unlock(&mutex_fila);
+            printf("%s entra na fila\n", pessoa->nome);
+            entrou = 1;
         }
+        
+        pthread_mutex_lock(&mutex_forno);
+            //seção crítica
 
-    pthread_mutex_unlock(&mutex_forno);
+            tipo_pessoa *maior_p = consulta_maior();//consulta
+            pthread_cond_signal(&maior_p->cond);
+
+            if (strcmp(maior_p->nome, pessoa->nome) == 0)
+            {
+                printf("%s está usando o forno\n", maior_p->nome);
+                maior_p->frustracoes = 0;
+                maior_p->prioridade_temp = maior_p->prioridade;
+                maior_p->uso_forno--;
+                sleep(1);
+                printf("%s liberou o forno\n", maior_p->nome);
+                //DESENFILEIRA E SIGNAL
+                tipo_pessoa ret = desenfileira();
+                entrou = 0;
+                pthread_cond_signal(&ret.cond);
+            }
+        pthread_mutex_unlock(&mutex_forno);
     }
     
 }

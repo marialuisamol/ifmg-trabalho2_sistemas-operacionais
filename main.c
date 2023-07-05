@@ -15,6 +15,7 @@ int main(int argc, char const *argv[])
     alunos[0].prioridade = 1;
     alunos[0].prioridade_temp = alunos[0].prioridade;
     alunos[0].uso_forno = USO_FORNO;
+    alunos[0].frustracoes = 0;
     pthread_cond_init(&alunos[0].cond, NULL); 
 
 
@@ -22,6 +23,7 @@ int main(int argc, char const *argv[])
     alunos[1].prioridade = 3;
     alunos[1].prioridade_temp = alunos[1].prioridade;
     alunos[1].uso_forno = USO_FORNO;
+    alunos[1].frustracoes = 0;
     pthread_cond_init(&alunos[1].cond, NULL); 
 
 
@@ -29,25 +31,28 @@ int main(int argc, char const *argv[])
     alunos[2].prioridade = 2;
     alunos[2].prioridade_temp = alunos[2].prioridade;
     alunos[2].uso_forno = USO_FORNO;
+    alunos[2].frustracoes = 0;
     pthread_cond_init(&alunos[2].cond, NULL); 
-
 
     // alunos[3].nome = "Sandro";
     // alunos[3].prioridade = 3;
     // alunos[3].prioridade_temp = alunos[3].prioridade;
     // alunos[3].uso_forno = USO_FORNO;
+    // alunos[3].frustracoes = 0;
     // pthread_cond_init(&alunos[3].cond, NULL); 
 
     // alunos[4].nome = "Vani";
     // alunos[4].prioridade = 2;
     // alunos[4].prioridade_temp = alunos[4].prioridade;
     // alunos[4].uso_forno = USO_FORNO;
+    // alunos[4].frustracoes = 0;
     // pthread_cond_init(&alunos[4].cond, NULL); 
 
     // alunos[5].nome = "Camila";
     // alunos[5].prioridade = 1;
     // alunos[5].prioridade_temp = alunos[5].prioridade;
     // alunos[5].uso_forno = USO_FORNO;
+    // alunos[5].frustracoes = 0;
     // pthread_cond_init(&alunos[5].cond, NULL); 
 
     cria_fila(); //inicializa a fila
