@@ -31,8 +31,6 @@ void enfileira(tipo_pessoa *pessoa)
     }
     else
     {
-        pthread_cond_wait(&pessoa->cond, &mutex_forno);
-
         tipo_pessoa *aux = fila->primeiro;
 
         while (aux != NULL)
@@ -40,53 +38,46 @@ void enfileira(tipo_pessoa *pessoa)
             if(aux->proximo == NULL)
             {
                 aux->proximo = pessoa;
-                fila->ultimo = pessoa;
+                pessoa->proximo = NULL;
+                fila->ultimo = pessoa->proximo;
                 fila->qnt++;
-                aux->proximo->proximo = NULL;
+                pthread_cond_wait(&pessoa->cond, &mutex_forno);
+                break;
             }
             aux = aux->proximo;
-            break;
-        }   
+        }
     }     
 }
 
-tipo_pessoa desenfileira()
+void desenfileira(tipo_pessoa *pessoa)
 {
-    tipo_pessoa *ret = consulta_maior();
 
-    envelhece(ret);
-
-    if (ret == fila->primeiro)
+    if (pessoa == fila->primeiro)
     {
         fila->primeiro = fila->primeiro->proximo;
-    }
-    
-    else if (ret == fila->ultimo)
-    {
-        tipo_pessoa *aux = fila->primeiro;
-        while (aux->proximo != ret)
-        {
-            aux = aux->proximo;
-        }
-        fila->ultimo = aux;
-    }
+    }    
     else
     {
-        tipo_pessoa *aux = ret;
+        tipo_pessoa *aux = fila->primeiro;
+        tipo_pessoa *anterior = fila->primeiro;
         while (aux != NULL)
         {
             aux = aux->proximo;
+            if (pessoa == aux){
+                anterior->proximo = pessoa->proximo;
+            }
+            anterior = anterior->proximo;
         }
-        
     }
     fila->qnt--;
-    return *ret;  
+    
+    return;  
 }
 
-tipo_pessoa* consulta_maior()
+tipo_pessoa consulta_maior()
 {
     tipo_pessoa *aux = fila->primeiro, *maior = fila->primeiro;
-    
+
     while (aux != NULL)
     {
         if (aux->prioridade_temp > maior->prioridade_temp)
@@ -95,69 +86,81 @@ tipo_pessoa* consulta_maior()
         }
         aux = aux->proximo;
     }
-    return maior;
+    return *maior;
 }
 
 
-void envelhece(tipo_pessoa *ultimo)
+void envelhece(tipo_pessoa *pessoa_atual)
 {
     tipo_pessoa *aux = fila->primeiro;
-    while (aux != ultimo)
+    if (fila->primeiro == pessoa_atual)
     {
-        aux->frustracoes++;
-        if (aux->frustracoes == 2)
+        return;
+    }
+    else
+    {
+        while (aux != pessoa_atual)
         {
-            aux->prioridade_temp++;
+            aux->frustracoes++;
+            if (aux->frustracoes == 2)
+            {
+                if (aux->prioridade_temp == 3)
+                {
+                    break;
+                }
+                else
+                {
+                    aux->prioridade_temp++;
+                    aux->frustracoes = 0;
+                }
+            }
+            aux = aux->proximo;
         }
+    }
+}
+
+void imprime_fila(){
+    tipo_pessoa *aux = fila->primeiro;
+    printf("FILA: ");
+    while (aux != NULL)
+    {
+        printf("%s\t", aux->nome);
         aux = aux->proximo;
     }
-    
+    printf("\n");
 }
 
 void tarefa(void* args){
     srand(time(NULL));
     tipo_pessoa *pessoa = (tipo_pessoa*)args;
-    int entrou = 0;
+    
     while (pessoa->uso_forno != 0)
     {
         sleep(rand()%6 + 2);
-        if (pessoa->uso_forno != 0 && entrou == 0)
-        {
-            pthread_mutex_lock(&mutex_fila);
+        pthread_mutex_lock(&mutex_fila);
             enfileira(pessoa);
-            pthread_mutex_unlock(&mutex_fila);
-            printf("%s entra na fila\n", pessoa->nome);
-            entrou = 1;
-        }
-        
+            printf("%s entra na fila\n", pessoa->nome);  
+            //imprime_fila(); 
+            envelhece(pessoa);
+        pthread_mutex_unlock(&mutex_fila);
+
         pthread_mutex_lock(&mutex_forno);
-            //seção crítica
-
-            tipo_pessoa *maior_p = consulta_maior();//consulta
-            pthread_cond_signal(&maior_p->cond);
-
-            if (strcmp(maior_p->nome, pessoa->nome) == 0)
-            {
-                printf("%s está usando o forno\n", maior_p->nome);
-                maior_p->frustracoes = 0;
-                maior_p->prioridade_temp = maior_p->prioridade;
-                maior_p->uso_forno--;
-                sleep(1);
-                printf("%s liberou o forno\n", maior_p->nome);
-                //DESENFILEIRA E SIGNAL
-                tipo_pessoa ret = desenfileira();
-                entrou = 0;
-                pthread_cond_signal(&ret.cond);
-            }
+            
+            desenfileira(pessoa);
+            //imprime_fila();
+            printf("%s está usando o forno\n", pessoa->nome);
+            pessoa->frustracoes = 0;
+            pessoa->prioridade_temp = pessoa->prioridade;
+            pessoa->uso_forno--;
+            sleep(1);
+            printf("%s libera o forno\n", pessoa->nome); 
+            //DESENFILEIRA E SIGNAL
+            
+            tipo_pessoa maior_p = consulta_maior();
+            //printf("Signal: %s\n", maior_p.nome);
+            pthread_cond_signal(&maior_p.cond);
+        
         pthread_mutex_unlock(&mutex_forno);
     }
     
 }
-
-// void tarefa_faxineiro(void* args)
-// {
-//     tipo_pessoa *faxineiro = (tipo_pessoa*)args;
-    
-//     sleep(5);  
-    
-// }
